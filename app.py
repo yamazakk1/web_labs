@@ -1,6 +1,8 @@
 import random
-from flask import Flask, render_template
+import re
+from flask import Flask, render_template, request, make_response
 from faker import Faker
+
 
 fake = Faker('ru_RU')
 
@@ -33,6 +35,89 @@ def generate_post(i):
     }
 
 posts_list = sorted([generate_post(i) for i in range(5)], key=lambda p: p['date'], reverse=True)
+
+@app.route('/request-info')
+def request_info():
+    url_params = request.args.to_dict()
+    
+    headers = dict(request.headers)
+
+    cookies = request.cookies.to_dict()
+    
+    return render_template('request_info.html', 
+                         title='Информация о запросе',
+                         url_params=url_params,
+                         headers=headers,
+                         cookies=cookies)
+
+@app.route('/auth', methods=['GET', 'POST'])
+def auth():
+    auth_data = None
+    
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        auth_data = {'username': username, 'password': password}
+        
+        response = make_response(render_template('auth.html', 
+                                                title='Авторизация',
+                                                auth_data=auth_data))
+        response.set_cookie('username', username, max_age=3600) 
+        return response
+    
+    return render_template('auth.html', title='Авторизация', auth_data=auth_data)
+
+def validate_phone(phone):
+    cleaned = re.sub(r'[^\d+]', '', phone)
+
+    invalid_chars = re.findall(r'[^\d\s\(\)\-\.\+]', phone)
+    if invalid_chars:
+        return False, None, "Недопустимый ввод. В номере телефона встречаются недопустимые символы."
+
+    digits = re.sub(r'\D', '', phone)  
+    digit_count = len(digits)
+
+    expected_digits = None
+    if phone.startswith('+7') or phone.startswith('8'):
+        expected_digits = 11
+    else:
+        expected_digits = 10
+    
+    if digit_count != expected_digits:
+        return False, None, f"Недопустимый ввод. Неверное количество цифр. (Ожидается {expected_digits}, получено {digit_count})"
+    
+    if digit_count == 11:
+        number_digits = digits[-10:] 
+    else:
+        number_digits = digits
+
+    formatted = f"8-{number_digits[0:3]}-{number_digits[3:6]}-{number_digits[6:8]}-{number_digits[8:10]}"
+    
+    return True, formatted, None
+
+@app.route('/phone', methods=['GET', 'POST'])
+def phone():
+    result = None
+    error = None
+    phone_number = ''
+    
+    if request.method == 'POST':
+        phone_number = request.form.get('phone', '')
+        is_valid, formatted, error_msg = validate_phone(phone_number)
+        
+        if is_valid:
+            result = formatted
+        else:
+            error = error_msg
+    
+    return render_template('phone.html', 
+                         title='Проверка номера телефона',
+                         phone_number=phone_number,
+                         result=result,
+                         error=error)
+
+
+
 
 @app.route('/')
 def index():

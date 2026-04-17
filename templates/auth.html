@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <h1 class="my-4 text-center">Авторизация</h1>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('auth') }}">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Имя пользователя</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Пароль</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Войти</button>
+                </form>
+            </div>
+        </div>
+
+        {% if auth_data %}
+        <div class="alert alert-success">
+            <h4 class="alert-heading">Данные успешно отправлены!</h4>
+            <hr>
+            <p><strong>Имя пользователя:</strong> {{ auth_data.username }}</p>
+            <p><strong>Пароль:</strong> {{ auth_data.password }}</p>
+            <p class="mb-0 small">Cookie с именем пользователя установлена!</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
