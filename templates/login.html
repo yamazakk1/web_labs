@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-5 mx-auto">
+        <h1 class="my-4 text-center">Вход в систему</h1>
+        
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('login') }}">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Логин</label>
+                        <input type="text" class="form-control" id="username" name="username" 
+                               placeholder="Введите логин" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Пароль</label>
+                        <input type="password" class="form-control" id="password" name="password" 
+                               placeholder="Введите пароль" required>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                        <label class="form-check-label" for="remember">Запомнить меня</label>
+                        <div class="form-text">Если отметить, сессия сохранится после закрытия браузера.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Войти</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="alert alert-secondary mt-4">
+            <strong>Тестовые данные:</strong><br>
+            Логин: <code>user</code><br>
+            Пароль: <code>qwerty</code>
+        </div>
+    </div>
+</div>
+{% endblock %}

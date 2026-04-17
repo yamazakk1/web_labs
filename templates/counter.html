@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto text-center">
+        <h1 class="my-4">Счетчик посещений</h1>
+        
+        <div class="card">
+            <div class="card-body">
+                <div class="display-1 mb-4">
+                    {{ visit_count }}
+                </div>
+                <p class="lead">
+                    {% if visit_count == 1 %}
+                        Вы посетили эту страницу <strong>{{ visit_count }}</strong> раз.
+                    {% else %}
+                        Вы посетили эту страницу <strong>{{ visit_count }}</strong> раз.
+                    {% endif %}
+                </p>
+                <hr>
+                <p class="text-muted">
+                    <small>Счетчик работает с использованием Flask session. Обновите страницу, чтобы увеличить счетчик.</small>
+                </p>
+            </div>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}
