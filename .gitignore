@@ -1,0 +1,19 @@
+# Виртуальное окружение
+ve/
+venv/
+env/
+ENV/
+
+# Файлы Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Файлы Flask
+instance/
+.webassets-cache
+
+
+

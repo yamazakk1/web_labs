@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Заголовок поста -->
+        <h1 class="my-4">{{ post.title }}</h1>
+        
+        <!-- Информация об авторе и дате -->
+        <div class="text-muted mb-4">
+            <p class="mb-0">
+                <strong>Автор:</strong> {{ post.author }}<br>
+                <strong>Дата публикации:</strong> {{ post.date.strftime('%d.%m.%Y в %H:%M') }}
+            </p>
+        </div>
+        
+        <!-- Изображение поста -->
+        <div class="mb-4">
+            <img class="img-fluid rounded" 
+                 src="{{ url_for('static', filename='images/' + post.image_id) }}" 
+                 alt="{{ post.title }}"
+                 style="width: 100%; height: auto;">
+        </div>
+        
+        <!-- Текст поста -->
+        <div class="post-content mb-5">
+            <p>{{ post.text }}</p>
+        </div>
+        
+        <!-- Форма для комментария -->
+        <div class="comments-section">
+            <h3 class="mb-4">Оставьте комментарий</h3>
+            <form method="POST" action="#" class="mb-5">
+                <div class="mb-3">
+                    <label for="comment" class="form-label">Ваш комментарий</label>
+                    <textarea class="form-control" id="comment" name="comment" rows="4" 
+                              placeholder="Напишите ваш комментарий здесь..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Отправить</button>
+            </form>
+            
+            <!-- Комментарии -->
+            <h3 class="mb-4">Комментарии</h3>
+            {% if post.comments %}
+                {% for comment in post.comments %}
+                    <div class="comment mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0 me-3">
+                                        <img src="{{ url_for('static', filename='images/default-avatar.png') }}" 
+                                             alt="Аватар" 
+                                             class="rounded-circle"
+                                             style="width: 50px; height: 50px; object-fit: cover;">
+                                    </div>
+                                    
+                                    <div class="flex-grow-1">
+                                <h5 class="card-title">{{ comment.author }}</h5>
+                                <p class="card-text">{{ comment.text }}</p>
+                                
+                                {% if comment.replies %}
+                                    <div class="replies mt-3 ms-4">
+                                        {% for reply in comment.replies %}
+                                            <div class="card mb-2">
+                                                <div class="card-body">
+                                                    <div class="d-flex">
+                                                                <div class="flex-shrink-0 me-3">
+                                                                    <img src="{{ url_for('static', filename='images/default-avatar.png') }}" 
+                                                                         alt="Аватар" 
+                                                                         class="rounded-circle"
+                                                                         style="width: 40px; height: 40px; object-fit: cover;">
+                                                                </div>
+                                                                <div class="flex-grow-1">
+                                                    <h6 class="card-subtitle mb-2 text-muted">
+                                                        {{ reply.author }} (ответ)
+                                                    </h6>
+                                                    <p class="card-text">{{ reply.text }}</p>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted">Пока нет комментариев. Будьте первым!</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
